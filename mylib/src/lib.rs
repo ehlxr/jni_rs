@@ -15,13 +15,13 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_fetchNameStr(
     {
         let jstr = env.get_string(JString::from(result)).unwrap();
         // println!("call getNameStr result: {}", String::from(jstr));
-        format!("Hello, {}! from Rust..", String::from(jstr))
+        String::from(jstr)
     } else {
-        format!("Hello! from Rust..")
+        "".to_string()
     };
 
     let output = env
-        .new_string(out_str)
+        .new_string(format!("Hello{}! from Rust..", out_str))
         .expect("Couldn't create java string!");
     output.into_inner()
 }
