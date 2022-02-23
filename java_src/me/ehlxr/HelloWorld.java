@@ -39,16 +39,14 @@ class HelloWorld {
 
 
         HelloWorld hw =  new HelloWorld();
-        // hw.setNameStr("fsdfs");
+        hw.setNameStr("fsdfs");
         System.out.println(HelloWorld.fetchNameStr(hw));
     }
 
     private String nameStr;
 
     public void setNameStr(String nameStr){
-      System.out.println(nameStr);
-
-      // this.nameStr=nameStr;
+      this.nameStr=nameStr;
     }
 
     public String getNameStr(){

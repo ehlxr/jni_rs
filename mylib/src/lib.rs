@@ -9,15 +9,19 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_fetchNameStr(
     _class: JClass,
     input: JObject,
 ) -> jstring {
-    if let JValue::Object(rt) = env
+    let out_str = if let JValue::Object(result) = env
         .call_method(input, "getNameStr", "()Ljava/lang/String;", &[])
         .unwrap()
     {
-        println!("return {:?}", rt)
+        let jstr = env.get_string(JString::from(result)).unwrap();
+        // println!("call getNameStr result: {}", String::from(jstr));
+        format!("Hello, {}! from Rust..", String::from(jstr))
+    } else {
+        format!("Hello! from Rust..")
     };
 
     let output = env
-        .new_string(format!("Hello, {:?}! from Rust..", input))
+        .new_string(out_str)
         .expect("Couldn't create java string!");
     output.into_inner()
 }
