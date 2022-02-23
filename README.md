@@ -12,12 +12,13 @@ cd java_src
 javac me/ehlxr/HelloWorld.java
 ```
 
-Run Java
+Java run
+
 ```shell
 cd java_src
 
-// Linux: export LD_LIBRARY_PATH=../mylib/target/debug/
-export JAVA_LIBRARY_PATH=../mylib/target/debug/
+# Linux: export LD_LIBRARY_PATH=../mylib/target/debug/
+# export JAVA_LIBRARY_PATH=../mylib/target/debug/
 
-java me.ehlxr.HelloWorld
+java -Djava.library.path=../mylib/target/debug/ me.ehlxr.HelloWorld
 ```
