@@ -4,12 +4,12 @@ class HelloWorld {
     private static native String hello(String input);
     private static native byte[] helloByte(byte[] input);
     private static native void factAndCallMeBack(int n, HelloWorld callback);
-
     private static native long counterNew(HelloWorld callback);
     private static native void counterIncrement(long counter_ptr);
     private static native void counterDestroy(long counter_ptr);
-
     private static native void asyncComputation(HelloWorld callback);
+
+    private static native String fetchNameStr(HelloWorld param);
 
     static {
         // Linux: export LD_LIBRARY_PATH=/Users/ehlxr/Desktop/jni_rs/mylib/target/debug
@@ -18,23 +18,41 @@ class HelloWorld {
     }
 
     public static void main(String[] args) {
-        String output = HelloWorld.hello("Java");
-        System.out.println(output);
-        byte[] outputByte = HelloWorld.helloByte("byte".getBytes());
-        System.out.println(outputByte);
+        // String output = HelloWorld.hello("Java");
+        // System.out.println(output);
 
-        HelloWorld.factAndCallMeBack(6, new HelloWorld());
+        // byte[] outputByte = HelloWorld.helloByte("byte".getBytes());
+        // System.out.println(outputByte);
 
-        long counter_ptr = counterNew(new HelloWorld());
+        // HelloWorld.factAndCallMeBack(6, new HelloWorld());
 
-        for (int i = 0; i < 5; i++) {
-          counterIncrement(counter_ptr);
-        }
+        // long counter_ptr = counterNew(new HelloWorld());
 
-        counterDestroy(counter_ptr);
+        // for (int i = 0; i < 5; i++) {
+        //   counterIncrement(counter_ptr);
+        // }
 
-        System.out.println("Invoking asyncComputation (thread id = " + Thread.currentThread().getId() + ")");
-        asyncComputation(new HelloWorld());
+        // counterDestroy(counter_ptr);
+
+        // System.out.println("Invoking asyncComputation (thread id = " + Thread.currentThread().getId() + ")");
+        // asyncComputation(new HelloWorld());
+
+
+        HelloWorld hw =  new HelloWorld();
+        // hw.setNameStr("fsdfs");
+        System.out.println(HelloWorld.fetchNameStr(hw));
+    }
+
+    private String nameStr;
+
+    public void setNameStr(String nameStr){
+      System.out.println(nameStr);
+
+      // this.nameStr=nameStr;
+    }
+
+    public String getNameStr(){
+      return nameStr;
     }
 
     public void factCallback(int res) {

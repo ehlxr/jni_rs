@@ -1,10 +1,26 @@
-use jni::JNIEnv;
-
-use jni::objects::{GlobalRef, JClass, JObject, JString};
-
+use jni::objects::{GlobalRef, JClass, JObject, JString, JValue};
 use jni::sys::{jbyteArray, jint, jlong, jstring};
-
+use jni::JNIEnv;
 use std::{sync::mpsc, thread, time::Duration};
+
+#[no_mangle]
+pub extern "system" fn Java_me_ehlxr_HelloWorld_fetchNameStr(
+    env: JNIEnv,
+    _class: JClass,
+    input: JObject,
+) -> jstring {
+    if let JValue::Object(rt) = env
+        .call_method(input, "getNameStr", "()Ljava/lang/String;", &[])
+        .unwrap()
+    {
+        println!("return {:?}", rt)
+    };
+
+    let output = env
+        .new_string(format!("Hello, {:?}! from Rust..", input))
+        .expect("Couldn't create java string!");
+    output.into_inner()
+}
 
 #[no_mangle]
 pub extern "system" fn Java_me_ehlxr_HelloWorld_hello(
