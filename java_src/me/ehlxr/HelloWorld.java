@@ -2,8 +2,8 @@ package me.ehlxr;
 
 class HelloWorld {
     static {
-        // Linux: export LD_LIBRARY_PATH=/Users/ehlxr/Desktop/jni_rs/mylib/target/debug
-        // Mac: export JAVA_LIBRARY_PATH=/Users/ehlxr/Desktop/jni_rs/mylib/target/debug
+        // Linux: export LD_LIBRARY_PATH=/Users/ehlxr/Workspaces/Rust/jni_rs/mylib/target/debug
+        // Mac: export JAVA_LIBRARY_PATH=/Users/ehlxr/Workspaces/Rust/jni_rs/mylib/target/debug
         System.loadLibrary("mylib");
     }
 
