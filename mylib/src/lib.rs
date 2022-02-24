@@ -4,13 +4,32 @@ use jni::JNIEnv;
 use std::{sync::mpsc, thread, time::Duration};
 
 #[no_mangle]
-pub extern "system" fn Java_me_ehlxr_HelloWorld_fetchNameStr(
+pub extern "system" fn Java_me_ehlxr_HelloWorld_getFiled(
     env: JNIEnv,
     _class: JClass,
     input: JObject,
 ) -> jstring {
+    let age = env.get_field(input, "age", "I").unwrap().i().unwrap();
+    println!("get age field: {}", age);
+
+    let name: JString = env
+        .get_field(input, "name", "Ljava/lang/String;")
+        .unwrap()
+        .l()
+        .unwrap()
+        .into();
+    println!(
+        "get name field: {}",
+        String::from(env.get_string(name).unwrap())
+    );
+
+    let no = env.get_field(input, "no", "J").unwrap().j().unwrap();
+    // let jstr = env.get_string(JString::from(no)).unwrap();
+    // println!("get addr field: {}", String::from(jstr));
+    println!("get no field: {}", no);
+
     let out_str = if let JValue::Object(result) = env
-        .call_method(input, "getNameStr", "()Ljava/lang/String;", &[])
+        .call_method(input, "getName", "()Ljava/lang/String;", &[])
         .unwrap()
     {
         let jstr = env.get_string(JString::from(result)).unwrap();
