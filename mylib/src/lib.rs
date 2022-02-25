@@ -4,11 +4,12 @@ use jni::sys::{jbyteArray, jint, jlong, jobject, jstring};
 use jni::JNIEnv;
 use std::{sync::mpsc, thread, time::Duration};
 #[no_mangle]
-pub extern "system" fn Java_me_ehlxr_HelloWorld_getFiled(
+pub extern "system" fn Java_me_ehlxr_HelloWorld_getField(
     env: JNIEnv,
     _class: JClass,
     input: JObject,
 ) -> jobject {
+    // Map field operate
     let jmap = env
         .get_map(
             env.get_field(input, "map", "Ljava/util/Map;")
@@ -40,6 +41,7 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getFiled(
         );
     });
 
+    // List field operate
     let jlist = env
         .get_list(
             env.get_field(input, "ls", "Ljava/util/List;")
@@ -51,14 +53,16 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getFiled(
     jlist.iter().unwrap().into_iter().for_each(|jobj| {
         let jstr: JString = jobj.into();
         println!(
-            "get list filed: {}",
+            "get list field: {}",
             String::from(env.get_string(jstr).unwrap())
         );
     });
 
+    // int field operate
     let age = env.get_field(input, "age", "I").unwrap().i().unwrap();
     println!("get age field: {}", age);
 
+    // String field operate
     let name: JString = env
         .get_field(input, "name", "Ljava/lang/String;")
         .unwrap()
@@ -70,9 +74,7 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getFiled(
         String::from(env.get_string(name).unwrap())
     );
 
-    // let no = env.get_field(input, "no", "J").unwrap().j().unwrap();
-    // println!("get no field: {}", no);
-
+    // Long field operate
     let no = long_value(
         env,
         env.get_field(input, "no", "Ljava/lang/Long;")
@@ -82,6 +84,7 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getFiled(
     );
     println!("get no field: {}", no);
 
+    // call method operate
     let out_str = if let JValue::Object(result) = env
         .call_method(input, "getName", "()Ljava/lang/String;", &[])
         .unwrap()
@@ -94,6 +97,7 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getFiled(
     };
     println!("Hello {}! from Rust..", out_str);
 
+    // new ArrayList operate
     let jlist = unwrap(
         &env,
         JList::from_env(
@@ -102,6 +106,7 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getFiled(
         ),
     );
 
+    // new LinkedHashMap operate
     let jmap = unwrap(
         &env,
         JMap::from_env(
@@ -109,6 +114,8 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getFiled(
             unwrap(&env, env.new_object("java/util/LinkedHashMap", "()V", &[])),
         ),
     );
+
+    // Map put key value operate
     unwrap(
         &env,
         jmap.put(
@@ -125,8 +132,11 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getFiled(
     );
     let jmap2 = jmap.clone();
 
+    // List add element operate
     unwrap(&env, jlist.add(JObject::from(jmap)));
     unwrap(&env, jlist.add(jmap2));
+
+    println!("list size {}", jlist.size().unwrap());
 
     jlist.into_inner()
 
