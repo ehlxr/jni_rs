@@ -15,6 +15,11 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getFiled(
         .l()
         .unwrap();
     let jmap = env.get_map(map).unwrap();
+    let v1 = jmap
+        .get(JObject::from(env.new_string("k1").unwrap()))
+        .unwrap()
+        .unwrap();
+    println!("get map key k1, value: {}", long_value(env, v1));
 
     jmap.iter().unwrap().into_iter().for_each(|jmap_iter| {
         let key: JString = jmap_iter.0.into();
