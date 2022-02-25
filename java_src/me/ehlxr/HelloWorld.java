@@ -31,7 +31,7 @@ class HelloWorld {
 
     private static native void asyncComputation(HelloWorld callback);
 
-    private static native String getFiled(HelloWorld param);
+    private static native List<Map<String, Long>> getFiled(HelloWorld param);
 
     public static void main(String[] args) {
         String output = HelloWorld.hello("Java");
@@ -69,7 +69,7 @@ class HelloWorld {
         hw.age = 30;
         hw.ls = ls;
         hw.map = map;
-        System.out.println(HelloWorld.getFiled(hw));
+        System.out.println("get return: "+HelloWorld.getFiled(hw));
     }
 
     public String getName() {

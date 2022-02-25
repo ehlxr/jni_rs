@@ -1,14 +1,14 @@
-use jni::objects::{GlobalRef, JClass, JObject, JString, JValue};
-use jni::sys::{jbyteArray, jint, jlong, jstring};
+use jni::errors::Result;
+use jni::objects::{GlobalRef, JClass, JList, JMap, JObject, JString, JValue};
+use jni::sys::{jbyteArray, jint, jlong, jobject, jstring};
 use jni::JNIEnv;
 use std::{sync::mpsc, thread, time::Duration};
-
 #[no_mangle]
 pub extern "system" fn Java_me_ehlxr_HelloWorld_getFiled(
     env: JNIEnv,
     _class: JClass,
     input: JObject,
-) -> jstring {
+) -> jobject {
     let jmap = env
         .get_map(
             env.get_field(input, "map", "Ljava/util/Map;")
@@ -82,7 +82,7 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getFiled(
     );
     println!("get no field: {}", no);
 
-    let out_str = if let JValue::Object(result) = env
+    let _out_str = if let JValue::Object(result) = env
         .call_method(input, "getName", "()Ljava/lang/String;", &[])
         .unwrap()
     {
@@ -93,10 +93,32 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getFiled(
         "".to_string()
     };
 
-    let output = env
-        .new_string(format!("Hello {}! from Rust..", out_str))
-        .expect("Couldn't create java string!");
-    output.into_inner()
+    let map_object = unwrap(&env, env.new_object("java/util/LinkedHashMap", "()V", &[]));
+    let jmap = JMap::from_env(&env, map_object).unwrap();
+    jmap.put(
+        JObject::from(env.new_string("kd").unwrap()),
+        long_to_jobj(env, 666 as i64),
+    )
+    .unwrap();
+    jmap.put(
+        JObject::from(env.new_string("kk").unwrap()),
+        long_to_jobj(env, 999 as i64),
+    )
+    .unwrap();
+    let jmap2 = jmap.clone();
+
+    let list_object = env.new_object("java/util/ArrayList", "()V", &[]).unwrap();
+    let jlist = JList::from_env(&env, list_object).unwrap();
+    jlist.add(JObject::from(jmap)).unwrap();
+
+    jlist.add(jmap2).unwrap();
+
+    jlist.into_inner()
+
+    // let output = env
+    //     .new_string(format!("Hello {}! from Rust..", _out_str))
+    //     .expect("Couldn't create java string!");
+    // output.into_inner()
 }
 
 #[no_mangle]
@@ -245,6 +267,22 @@ fn long_to_jobj<'a>(env: JNIEnv<'a>, lv: i64) -> JObject<'a> {
     .unwrap()
     .l()
     .unwrap()
+}
+
+pub fn print_exception(env: &JNIEnv) {
+    let exception_occurred = env.exception_check().unwrap_or_else(|e| panic!("{:?}", e));
+    if exception_occurred {
+        env.exception_describe()
+            .unwrap_or_else(|e| panic!("{:?}", e));
+    }
+}
+
+#[allow(dead_code)]
+pub fn unwrap<T>(env: &JNIEnv, res: Result<T>) -> T {
+    res.unwrap_or_else(|e| {
+        print_exception(&env);
+        panic!("{:#?}", e);
+    })
 }
 
 #[cfg(test)]
