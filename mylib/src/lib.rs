@@ -1,7 +1,6 @@
-use jni::objects::{GlobalRef, JClass, JList, JObject, JString, JValue};
+use jni::objects::{GlobalRef, JClass, JObject, JString, JValue};
 use jni::sys::{jbyteArray, jint, jlong, jstring};
 use jni::JNIEnv;
-use std::slice::SliceIndex;
 use std::{sync::mpsc, thread, time::Duration};
 
 #[no_mangle]
@@ -16,14 +15,14 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getFiled(
         .l()
         .unwrap();
     let jmap = env.get_map(map).unwrap();
-    // jmp.get(slice)
+
     jmap.iter().unwrap().into_iter().for_each(|jmap_iter| {
         let key: JString = jmap_iter.0.into();
-        let value: JString = jmap_iter.1.into();
+        let value = jmap_iter.1;
         println!(
             "get map key: {}, value: {}",
             String::from(env.get_string(key).unwrap()),
-            String::from(env.get_string(value).unwrap())
+            long_value(env, value)
         );
     });
 
@@ -60,19 +59,13 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getFiled(
     // let no = env.get_field(input, "no", "J").unwrap().j().unwrap();
     // println!("get no field: {}", no);
 
-    let no = env
-        .call_method(
-            env.get_field(input, "no", "Ljava/lang/Long;")
-                .unwrap()
-                .l()
-                .unwrap(),
-            "longValue",
-            "()J",
-            &[],
-        )
-        .unwrap()
-        .j()
-        .unwrap();
+    let no = long_value(
+        env,
+        env.get_field(input, "no", "Ljava/lang/Long;")
+            .unwrap()
+            .l()
+            .unwrap(),
+    );
     println!("get no field: {}", no);
 
     let out_str = if let JValue::Object(result) = env
@@ -219,6 +212,13 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_asyncComputation(
     });
 
     rx.recv().unwrap();
+}
+
+fn long_value(env: JNIEnv, jobj: JObject) -> i64 {
+    env.call_method(jobj, "longValue", "()J", &[])
+        .unwrap()
+        .j()
+        .unwrap()
 }
 
 #[cfg(test)]

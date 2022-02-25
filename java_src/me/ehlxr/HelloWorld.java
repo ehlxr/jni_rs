@@ -2,6 +2,7 @@ package me.ehlxr;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.HashMap;
 
 class HelloWorld {
     static {
@@ -56,11 +57,18 @@ class HelloWorld {
         ls.add("ls1");
         ls.add("ls2");
         ls.add("ls3");
+
+        Map<String, Long> map = new HashMap<>();
+        map.put("k1", 1L);
+        map.put("k2", 2L);
+        map.put("k3", 3L);
+
         HelloWorld hw = new HelloWorld();
         hw.setName("Jack");
         hw.no = 123434555L;
         hw.age = 30;
         hw.ls = ls;
+        hw.map = map;
         System.out.println(HelloWorld.getFiled(hw));
     }
 
