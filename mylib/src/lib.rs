@@ -9,23 +9,32 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getFiled(
     _class: JClass,
     input: JObject,
 ) -> jstring {
-    let map = env
-        .get_field(input, "map", "Ljava/util/Map;")
-        .unwrap()
-        .l()
+    let jmap = env
+        .get_map(
+            env.get_field(input, "map", "Ljava/util/Map;")
+                .unwrap()
+                .l()
+                .unwrap(),
+        )
         .unwrap();
-    let jmap = env.get_map(map).unwrap();
     let v1 = jmap
         .get(JObject::from(env.new_string("k1").unwrap()))
         .unwrap()
         .unwrap();
     println!("get map key k1, value: {}", long_value(env, v1));
 
+    if let Ok(_) = jmap.put(
+        JObject::from(env.new_string("k9").unwrap()),
+        long_to_jobj(env, 9 as i64),
+    ) {
+        println!("put key ok");
+    };
+
     jmap.iter().unwrap().into_iter().for_each(|jmap_iter| {
         let key: JString = jmap_iter.0.into();
         let value = jmap_iter.1;
         println!(
-            "get map key: {}, value: {}",
+            "iter map key: {}, value: {}",
             String::from(env.get_string(key).unwrap()),
             long_value(env, value)
         );
@@ -224,6 +233,18 @@ fn long_value(env: JNIEnv, jobj: JObject) -> i64 {
         .unwrap()
         .j()
         .unwrap()
+}
+
+fn long_to_jobj<'a>(env: JNIEnv<'a>, lv: i64) -> JObject<'a> {
+    env.call_static_method(
+        "Ljava/lang/Long;",
+        "valueOf",
+        "(J)Ljava/lang/Long;",
+        &[JValue::from(lv)],
+    )
+    .unwrap()
+    .l()
+    .unwrap()
 }
 
 #[cfg(test)]
