@@ -1,6 +1,7 @@
 use jni::objects::{GlobalRef, JClass, JList, JObject, JString, JValue};
 use jni::sys::{jbyteArray, jint, jlong, jstring};
 use jni::JNIEnv;
+use std::slice::SliceIndex;
 use std::{sync::mpsc, thread, time::Duration};
 
 #[no_mangle]
@@ -9,6 +10,23 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getFiled(
     _class: JClass,
     input: JObject,
 ) -> jstring {
+    let map = env
+        .get_field(input, "map", "Ljava/util/Map;")
+        .unwrap()
+        .l()
+        .unwrap();
+    let jmap = env.get_map(map).unwrap();
+    // jmp.get(slice)
+    jmap.iter().unwrap().into_iter().for_each(|jmap_iter| {
+        let key: JString = jmap_iter.0.into();
+        let value: JString = jmap_iter.1.into();
+        println!(
+            "get map key: {}, value: {}",
+            String::from(env.get_string(key).unwrap()),
+            String::from(env.get_string(value).unwrap())
+        );
+    });
+
     let jlist = env
         .get_list(
             env.get_field(input, "ls", "Ljava/util/List;")
