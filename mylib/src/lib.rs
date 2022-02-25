@@ -1,4 +1,4 @@
-use jni::objects::{GlobalRef, JClass, JObject, JString, JValue};
+use jni::objects::{GlobalRef, JClass, JList, JObject, JString, JValue};
 use jni::sys::{jbyteArray, jint, jlong, jstring};
 use jni::JNIEnv;
 use std::{sync::mpsc, thread, time::Duration};
@@ -9,6 +9,23 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getFiled(
     _class: JClass,
     input: JObject,
 ) -> jstring {
+    let jlist = env
+        .get_list(
+            env.get_field(input, "ls", "Ljava/util/List;")
+                .unwrap()
+                .l()
+                .unwrap(),
+        )
+        .unwrap();
+    let jlist_iter = jlist.iter().unwrap();
+    jlist_iter.into_iter().for_each(|jobj| {
+        let jstr: JString = jobj.into();
+        println!(
+            "get list filed: {}",
+            String::from(env.get_string(jstr).unwrap())
+        );
+    });
+
     let age = env.get_field(input, "age", "I").unwrap().i().unwrap();
     println!("get age field: {}", age);
 
@@ -23,9 +40,22 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getFiled(
         String::from(env.get_string(name).unwrap())
     );
 
-    let no = env.get_field(input, "no", "J").unwrap().j().unwrap();
-    // let jstr = env.get_string(JString::from(no)).unwrap();
-    // println!("get addr field: {}", String::from(jstr));
+    // let no = env.get_field(input, "no", "J").unwrap().j().unwrap();
+    // println!("get no field: {}", no);
+
+    let no = env
+        .call_method(
+            env.get_field(input, "no", "Ljava/lang/Long;")
+                .unwrap()
+                .l()
+                .unwrap(),
+            "longValue",
+            "()J",
+            &[],
+        )
+        .unwrap()
+        .j()
+        .unwrap();
     println!("get no field: {}", no);
 
     let out_str = if let JValue::Object(result) = env

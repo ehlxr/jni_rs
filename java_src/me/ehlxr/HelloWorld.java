@@ -1,4 +1,7 @@
 package me.ehlxr;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
 
 class HelloWorld {
     static {
@@ -7,9 +10,11 @@ class HelloWorld {
         System.loadLibrary("mylib");
     }
 
-    public long no;
+    public Long no;
     private String name;
     public int age;
+    public List<String> ls;
+    public Map<String, Long> map;
 
     private static native String hello(String input);
 
@@ -47,10 +52,15 @@ class HelloWorld {
         // System.out.println("Invoking asyncComputation (thread id = " + Thread.currentThread().getId() + ")");
         // asyncComputation(new HelloWorld());
 
+        List<String> ls = new ArrayList<>();
+        ls.add("ls1");
+        ls.add("ls2");
+        ls.add("ls3");
         HelloWorld hw = new HelloWorld();
         hw.setName("Jack");
         hw.no = 123434555L;
         hw.age = 30;
+        hw.ls = ls;
         System.out.println(HelloWorld.getFiled(hw));
     }
 
