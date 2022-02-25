@@ -82,7 +82,7 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getFiled(
     );
     println!("get no field: {}", no);
 
-    let _out_str = if let JValue::Object(result) = env
+    let out_str = if let JValue::Object(result) = env
         .call_method(input, "getName", "()Ljava/lang/String;", &[])
         .unwrap()
     {
@@ -92,6 +92,7 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getFiled(
     } else {
         "".to_string()
     };
+    println!("Hello {}! from Rust..", out_str);
 
     let jlist = unwrap(
         &env,
@@ -130,7 +131,7 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getFiled(
     jlist.into_inner()
 
     // let output = env
-    //     .new_string(format!("Hello {}! from Rust..", _out_str))
+    //     .new_string(format!("Hello {}! from Rust..", out_str))
     //     .expect("Couldn't create java string!");
     // output.into_inner()
 }
