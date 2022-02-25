@@ -93,25 +93,39 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getFiled(
         "".to_string()
     };
 
-    let map_object = unwrap(&env, env.new_object("java/util/LinkedHashMap", "()V", &[]));
-    let jmap = JMap::from_env(&env, map_object).unwrap();
-    jmap.put(
-        JObject::from(env.new_string("kd").unwrap()),
-        long_to_jobj(env, 666 as i64),
-    )
-    .unwrap();
-    jmap.put(
-        JObject::from(env.new_string("kk").unwrap()),
-        long_to_jobj(env, 999 as i64),
-    )
-    .unwrap();
+    let jlist = unwrap(
+        &env,
+        JList::from_env(
+            &env,
+            unwrap(&env, env.new_object("java/util/ArrayList", "()V", &[])),
+        ),
+    );
+
+    let jmap = unwrap(
+        &env,
+        JMap::from_env(
+            &env,
+            unwrap(&env, env.new_object("java/util/LinkedHashMap", "()V", &[])),
+        ),
+    );
+    unwrap(
+        &env,
+        jmap.put(
+            JObject::from(env.new_string("kd").unwrap()),
+            long_to_jobj(env, 666 as i64),
+        ),
+    );
+    unwrap(
+        &env,
+        jmap.put(
+            JObject::from(env.new_string("kk").unwrap()),
+            long_to_jobj(env, 999 as i64),
+        ),
+    );
     let jmap2 = jmap.clone();
 
-    let list_object = env.new_object("java/util/ArrayList", "()V", &[]).unwrap();
-    let jlist = JList::from_env(&env, list_object).unwrap();
-    jlist.add(JObject::from(jmap)).unwrap();
-
-    jlist.add(jmap2).unwrap();
+    unwrap(&env, jlist.add(JObject::from(jmap)));
+    unwrap(&env, jlist.add(jmap2));
 
     jlist.into_inner()
 
