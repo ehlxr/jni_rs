@@ -17,8 +17,7 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getFiled(
                 .unwrap(),
         )
         .unwrap();
-    let jlist_iter = jlist.iter().unwrap();
-    jlist_iter.into_iter().for_each(|jobj| {
+    jlist.iter().unwrap().into_iter().for_each(|jobj| {
         let jstr: JString = jobj.into();
         println!(
             "get list filed: {}",
