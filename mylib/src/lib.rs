@@ -44,7 +44,7 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getField(
     // List field operate
     let jlist = env
         .get_list(
-            env.get_field(input, "ls", "Ljava/util/List;")
+            env.get_field(input, "list", "Ljava/util/List;")
                 .unwrap()
                 .l()
                 .unwrap(),
@@ -98,7 +98,7 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getField(
     println!("Hello {}! from Rust..", out_str);
 
     // new ArrayList operate
-    let jlist = unwrap(
+    let list = unwrap(
         &env,
         JList::from_env(
             &env,
@@ -107,7 +107,7 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getField(
     );
 
     // new LinkedHashMap operate
-    let jmap = unwrap(
+    let map = unwrap(
         &env,
         JMap::from_env(
             &env,
@@ -118,27 +118,48 @@ pub extern "system" fn Java_me_ehlxr_HelloWorld_getField(
     // Map put key value operate
     unwrap(
         &env,
-        jmap.put(
-            JObject::from(env.new_string("kd").unwrap()),
-            long_to_jobj(env, 666 as i64),
+        map.put(
+            JObject::from(env.new_string("no").unwrap()),
+            long_to_jobj(env, no),
         ),
     );
     unwrap(
         &env,
-        jmap.put(
-            JObject::from(env.new_string("kk").unwrap()),
-            long_to_jobj(env, 999 as i64),
+        map.put(
+            JObject::from(env.new_string("age").unwrap()),
+            long_to_jobj(env, age as i64),
         ),
     );
-    let jmap2 = jmap.clone();
+    unwrap(
+        &env,
+        map.put(
+            JObject::from(env.new_string("name").unwrap()),
+            JObject::from(name),
+        ),
+    );
+    unwrap(
+        &env,
+        map.put(
+            JObject::from(env.new_string("list").unwrap()),
+            JObject::from(jlist),
+        ),
+    );
+    unwrap(
+        &env,
+        map.put(
+            JObject::from(env.new_string("map").unwrap()),
+            JObject::from(jmap),
+        ),
+    );
+    let jmap2 = map.clone();
 
     // List add element operate
-    unwrap(&env, jlist.add(JObject::from(jmap)));
-    unwrap(&env, jlist.add(jmap2));
+    unwrap(&env, list.add(JObject::from(map)));
+    unwrap(&env, list.add(jmap2));
 
-    println!("list size {}", jlist.size().unwrap());
+    println!("list size {}", list.size().unwrap());
 
-    jlist.into_inner()
+    list.into_inner()
 
     // let output = env
     //     .new_string(format!("Hello {}! from Rust..", out_str))

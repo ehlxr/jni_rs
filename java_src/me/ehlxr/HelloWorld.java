@@ -14,7 +14,7 @@ class HelloWorld {
     public Long no;
     private String name;
     public int age;
-    public List<String> ls;
+    public List<String> list;
     public Map<String, Long> map;
 
     private static native String hello(String input);
@@ -31,7 +31,7 @@ class HelloWorld {
 
     private static native void asyncComputation(HelloWorld callback);
 
-    private static native List<Map<String, Long>> getField(HelloWorld param);
+    private static native List<Map<String, Object>> getField(HelloWorld param);
 
     public static void main(String[] args) {
         String output = HelloWorld.hello("Java");
@@ -67,7 +67,7 @@ class HelloWorld {
         hw.setName("Jack");
         hw.no = 123434555L;
         hw.age = 30;
-        hw.ls = ls;
+        hw.list = ls;
         hw.map = map;
         System.out.println("get return: " + HelloWorld.getField(hw));
     }
