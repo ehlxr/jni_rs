@@ -1,8 +1,11 @@
-use jni::errors::Result;
-use jni::objects::{GlobalRef, JClass, JList, JMap, JObject, JString, JValue};
-use jni::sys::{jbyteArray, jint, jlong, jobject, jstring};
-use jni::JNIEnv;
+use jni::{
+    errors::Result,
+    objects::{GlobalRef, JClass, JList, JMap, JObject, JString, JValue},
+    sys::{jbyteArray, jint, jlong, jobject, jstring},
+    JNIEnv,
+};
 use std::{sync::mpsc, thread, time::Duration};
+
 #[no_mangle]
 pub extern "system" fn Java_me_ehlxr_HelloWorld_getField(
     env: JNIEnv,
